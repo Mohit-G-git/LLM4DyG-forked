@@ -55,17 +55,49 @@ class DyGraphPrompt:
         prompt_examplars = self.obj_task.generate_prompt_examplars(self.num_examplars) if self.num_examplars else ""
         prompt_question = self.obj_task.generate_prompt_question(query)
 
+        # prompt_seq = [
+        #     instructor_role,
+        #     instructor_dyg,
+        #     instructor_task,
+        #     self.prompt_imp,
+        #     instructor_answer,
+        #     prompt_examplars,
+        #     prompt_context,
+        #     prompt_question,
+        #     prompt_cot
+        # ]
         prompt_seq = [
+            prompt_context,          # <-- graph FIRST
+
+            prompt_question,         # <-- then the concrete question
+
             instructor_role,
             instructor_dyg,
             instructor_task,
             self.prompt_imp,
             instructor_answer,
             prompt_examplars,
-            prompt_context,
-            prompt_question,
             prompt_cot
         ]
+
+
+        final_constraint = (
+            "\nIMPORTANT:\n"
+            "The dynamic graph and all required information are already fully provided above.\n"
+            "Do NOT ask for more information.\n"
+            "Do NOT explain your reasoning.\n"
+            "Only output the final answer strictly in the required format.\n"
+        )
+        # prompt_seq = [
+        #     instructor_dyg,
+        #     instructor_task,
+        #     prompt_examplars,
+        #     final_constraint,
+        #     prompt_context,
+        #     prompt_question
+        # ]
+
+        prompt_seq.append(final_constraint)
         
         if self.args:
             short = self.args.__dict__.get("short", 0)

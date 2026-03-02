@@ -149,3 +149,5 @@ dmypy.json
 
 # vscode environment
 .vscode
+
+llm4dyg/private.py

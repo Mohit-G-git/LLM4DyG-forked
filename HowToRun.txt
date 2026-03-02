@@ -1,0 +1,28 @@
+#in LLM4Dyg RUN FOLLOWING: 
+
+first activate your venv by "source venv/bin/activate"
+
+nvidia-smi
+
+pkill -f fastchat
+pkill -f model_worker
+pkill -f openai_api_server
+
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+python3 scripts/example/start_server.py   --model llama2-7b   -t run   --device 0
+
+#in another terminal run
+
+python3 scripts/example/run_one_instance.py --task num_edge   --N 5   --T 3   --p 0.4   --num_seed 1   --model llama2-7b   --log_dir logs/final_run -t run
+
+#Evaluating when_connect task
+
+python scripts/example/run_one_task.py \
+  --task when_connect \
+  --model llama2-7b \
+  --N 10 \
+  --T 10 \
+  --log_dir logs/fig3/when_connect/T10_p03 \
+  --p 0.3 \
+   -t eval \

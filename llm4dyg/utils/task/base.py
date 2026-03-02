@@ -23,11 +23,15 @@ class DyGraphTask:
         edge_type = self.args.__dict__.get("edge_type", 0)
         if edge_type == 0:
             return f"Question: Given an undirected dynamic graph with the edges {[tuple(x) for x in context]}. "
+            # return f"Graph : Given an undirected dynamic graph with the edges {[tuple(x) for x in context]}. "
+
         elif edge_type == 1:
             edge_desc = ""
             for x in context:
                 edge_desc += f"{tuple(x)} "
             return f"Question: Given an undirected dynamic graph with the edges {edge_desc}. "
+            # return f"Graph : Given an undirected dynamic graph with the edges {edge_desc}. "
+
         else:
             raise NotImplementedError(f"edge_type {edge_type} not implemented")
 

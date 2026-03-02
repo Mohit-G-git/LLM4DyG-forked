@@ -6,11 +6,10 @@ with open("readme.md", 'r') as fh:
 __version__ = '0.0.2'
 URL = None
 install_requires = [
-    "scipy",
+    "scipy<1.11",
     "protobuf",
     "networkx",
     "libwon",
-    "snap-stanford",
     'igraph',
     'openai==0.28',
     'scikit-learn',
