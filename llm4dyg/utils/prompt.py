@@ -67,17 +67,15 @@ class DyGraphPrompt:
         #     prompt_cot
         # ]
         prompt_seq = [
-            prompt_context,          # <-- graph FIRST
-
-            prompt_question,         # <-- then the concrete question
-
-            instructor_role,
-            instructor_dyg,
-            instructor_task,
-            self.prompt_imp,
-            instructor_answer,
-            prompt_examplars,
-            prompt_cot
+            instructor_role,         # role context (if enabled)
+            instructor_dyg,          # explain what (u, v, t) means
+            instructor_task,         # what the task is
+            self.prompt_imp,         # improvement prompt (if any)
+            prompt_examplars,        # few-shot examples
+            instructor_answer,       # answer format instruction
+            prompt_context,          # the actual graph data
+            prompt_question,         # the concrete question
+            prompt_cot,              # chain-of-thought (if enabled)
         ]
 
 
@@ -85,8 +83,8 @@ class DyGraphPrompt:
             "\nIMPORTANT:\n"
             "The dynamic graph and all required information are already fully provided above.\n"
             "Do NOT ask for more information.\n"
-            "Do NOT explain your reasoning.\n"
-            "Only output the final answer strictly in the required format.\n"
+            "Scan each edge (u, v, t) and collect time t whenever u and v match the two queried nodes (in either order).\n"
+            "Output ONLY the final answer strictly in the required format.\n"
         )
         # prompt_seq = [
         #     instructor_dyg,

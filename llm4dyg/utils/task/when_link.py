@@ -46,7 +46,7 @@ class DyGraphTaskWhenLink(DyGraphTask):
         return qa
     
     def generate_instructor_task(self, *args, **kwargs):
-        return f"Your task is to answer when two nodes are linked in the dynamic graph.\n"
+        return f"Your task is to find ALL time steps at which two specified nodes share a direct edge in the dynamic graph.\nFor each edge (u, v, t), check if u and v match the two queried nodes (in either order). If they match, include t in your answer.\n"
     
     def generate_instructor_answer(self, *args, **kwargs):
         return "Give the answer as a python list at the last of your response after 'Answer:'.\n"
@@ -67,40 +67,56 @@ class DyGraphTaskWhenLink(DyGraphTask):
         return self.make_qa_example(num, qa)
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
-        return f"When are node {query[0]} and node {query[1]} linked?\n"
+        return f"When are node {query[0]} and node {query[1]} linked? Look through each edge and find all times t where the edge connects node {query[0]} and node {query[1]}.\n"
     
     def evaluate(self, qa, response):
         ans = qa['answer']
+        # Try: Answer: [1, 2, 3]
         match = re.search(r"Answer:\s*\[([\d,\s]+)\]", response)
         if match:
             numbers_str = match.group(1)
             numbers = [int(num) for num in numbers_str.split(',')]
             metric = (set(numbers) == set(ans))
             return metric
-        match = re.search(r"""answer is\s*[:`'"]?\s*(\d+)\s*""", response)
+        # Try: Answer: [] (empty list)
+        match = re.search(r"Answer:\s*\[\s*\]", response)
+        if match:
+            return len(ans) == 0
+        # Try: Answer: 5 (single number, no brackets)
+        match = re.search(r"Answer:\s*(\d+)\s*", response)
         if match:
             answer = int(match.group(1))
-            return answer == ans
-        
-        match = re.search(r"at time\s*(\d+)\s*", response)
-        if match:
-            answer = int(match.group(1))
-            return answer == ans
-        match = re.search(r"""at time\s*[:`'"]?\s*\[([\d,\s]+)\]""", response)
-        if match:
-            numbers_str = match.group(1)
-            numbers = [int(num) for num in numbers_str.split(',')]
-            metric = (set(numbers) == set(ans))
-            return metric
+            return set([answer]) == set(ans)
+        # Try: "answer is [1, 2, 3]"
         match = re.search(r"""answer is\s*[:`'"]?\s*\[([\d,\s]+)\]""", response)
         if match:
             numbers_str = match.group(1)
             numbers = [int(num) for num in numbers_str.split(',')]
             metric = (set(numbers) == set(ans))
             return metric
-        match = re.search(r"Answer:\s*(\d+)\s*", response)
+        # Try: "answer is 5"
+        match = re.search(r"""answer is\s*[:`'"]?\s*(\d+)\s*""", response)
         if match:
             answer = int(match.group(1))
-            return answer == ans
+            return set([answer]) == set(ans)
+        # Try: "at time [1, 2]"
+        match = re.search(r"""at time\s*[:`'"]?\s*\[([\d,\s]+)\]""", response)
+        if match:
+            numbers_str = match.group(1)
+            numbers = [int(num) for num in numbers_str.split(',')]
+            metric = (set(numbers) == set(ans))
+            return metric
+        # Try: "at time 5"
+        match = re.search(r"at time\s*(\d+)\s*", response)
+        if match:
+            answer = int(match.group(1))
+            return set([answer]) == set(ans)
+        # Last resort: find any bracketed list of numbers in the response
+        match = re.search(r"\[([\d,\s]+)\]", response)
+        if match:
+            numbers_str = match.group(1)
+            numbers = [int(num) for num in numbers_str.split(',')]
+            metric = (set(numbers) == set(ans))
+            return metric
         return -1
                                 

@@ -13,7 +13,7 @@ def get_args(args=None):
     
     # data
     parser.add_argument("--num_seed", type=int, default=10, help="number of problem instances")
-    parser.add_argument("--k", type=int, default=1, help="number of examples")
+    parser.add_argument("--k", type=int, default=2, help="number of examples")
     parser.add_argument("--T", type=int, nargs='+', default=[5], help="number of time steps")
     parser.add_argument("--N", type=int, nargs='+', default=[10], help="number of nodes")
     parser.add_argument("--p", type=float, nargs='+', default=[0.3], help="probability of edges")
