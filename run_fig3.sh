@@ -10,8 +10,8 @@ TASKS=(
   when_link
   when_connect
   when_tclosure
-  neighbor_at_time
-  neighbor_in_periods
+  what_node
+  which_neighbor
   check_tclosure
   check_tpath
   find_tpath

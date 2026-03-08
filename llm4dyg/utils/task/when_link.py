@@ -67,7 +67,12 @@ class DyGraphTaskWhenLink(DyGraphTask):
         return self.make_qa_example(num, qa)
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
-        return f"When are node {query[0]} and node {query[1]} linked? Look through each edge and find all times t where the edge connects node {query[0]} and node {query[1]}.\n"
+        return (
+            f"When are node {query[0]} and node {query[1]} linked? "
+            f"Go through EVERY edge (u, v, t) listed above. "
+            f"If u={query[0]} and v={query[1]}, OR u={query[1]} and v={query[0]}, include t. "
+            f"Otherwise skip that edge.\n"
+        )
     
     def evaluate(self, qa, response):
         ans = qa['answer']

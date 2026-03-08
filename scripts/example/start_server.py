@@ -21,8 +21,7 @@ ROOT = "" # local model root path
 
 model = args.model
 if model == "vicuna-7b":
-    model_path = "vicuna-7b-v1.5"
-    model_path = os.path.join(ROOT, model_path)
+    model_path = "lmsys/vicuna-7b-v1.5"
 elif model == "vicuna-13b":
     model_path = "vicuna-13b-v1.5"
     model_path = os.path.join(ROOT, model_path)

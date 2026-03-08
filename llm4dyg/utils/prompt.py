@@ -37,8 +37,28 @@ class DyGraphPrompt:
             imp = self.args.__dict__.get("imp", 0)
         else:
             imp = 0
-        self.prompt_imp = get_imp(imp)
-        self.prompt_cot = f"You can think it step by step.\n"
+        # Make CoT prompt dynamic based on task
+        if args and args.task == 'when_link':
+            self.prompt_cot = (
+                "Let's solve this step-by-step.\n"
+                "Go through EACH edge one at a time:\n"
+                "- For each edge (u, v, t), check: does {u, v} equal the set of queried nodes?\n"
+                "- If YES, add t to your result list.\n"
+                "- If NO, skip it.\n"
+                "After checking ALL edges, output your collected list.\n"
+            )
+        elif args and args.task == 'what_node':
+            self.prompt_cot = (
+                "Let's solve this step-by-step.\n"
+                "Go through EACH edge one at a time:\n"
+                "- For each edge (u, v, t), check: does t equal the queried time AND does {u, v} contain the queried node?\n"
+                "- If YES, add the OTHER node to your result list.\n"
+                "- If NO, skip it.\n"
+                "After checking ALL edges, output your collected list of nodes.\n"
+            )
+        else:
+            self.prompt_cot = "Let's work exactly step-by-step to avoid errors.\n"
+            
         self.add_cot = add_cot
         self.add_role = add_role
         self.num_examplars = num_examplars
@@ -83,9 +103,13 @@ class DyGraphPrompt:
             "\nIMPORTANT:\n"
             "The dynamic graph and all required information are already fully provided above.\n"
             "Do NOT ask for more information.\n"
-            "Scan each edge (u, v, t) and collect time t whenever u and v match the two queried nodes (in either order).\n"
-            "Output ONLY the final answer strictly in the required format.\n"
         )
+        if self.args and self.args.task == 'when_link':
+            final_constraint += "Scan each edge (u, v, t) and collect time t whenever u and v match the two queried nodes (in either order).\n"
+        elif self.args and self.args.task == 'what_node':
+            final_constraint += "Scan each edge (u, v, t) and collect the other node whenever the time t matches the queried time AND one of the nodes matches the queried node.\n"
+        
+        final_constraint += "Output ONLY the final answer strictly in the required format.\n"
         # prompt_seq = [
         #     instructor_dyg,
         #     instructor_task,

@@ -26,3 +26,6 @@ python scripts/example/run_one_task.py \
   --log_dir logs/fig3/when_connect/T10_p03 \
   --p 0.3 \
    -t eval \
+
+#from vicuna 7b
+python scripts/example/run_one_task.py   --task when_link --model vicuna-7b --N 10 --T 30 --p 0.3   --num_seed 100   --log_dir logs/fig3/when_link/T30_p03 -t eval

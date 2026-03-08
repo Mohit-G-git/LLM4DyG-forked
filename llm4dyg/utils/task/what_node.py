@@ -53,10 +53,28 @@ class DyGraphTaskWhatNode(DyGraphTask):
                 [2, 3]
              ]
         ]
-        return self.make_qa_example(num, qa)
+        
+        # Override the default example making to include Chain of Thought reasoning
+        res = "Here are some examples:\n"
+        for i in range(1):
+            context = self.generate_context_prompt(qa[i][0])
+            question = self.generate_prompt_question(qa[i][1])
+            answer = qa[i][2]
+            res += f"Example {i+1}:\n"
+            res += f"{context}"
+            res += f"Question: {question}"
+            res += f"Reasoning: We are looking for edges that contain node 1 EXACTLY at time 1.\n"
+            res += f"- Edge (1, 2, 1) has node 1 and time 1. -> Add node 2.\n"
+            res += f"- Edge (1, 3, 1) has node 1 and time 1. -> Add node 3.\n"
+            res += f"- Edge (1, 2, 5) has node 1 but time is 5 (not 1). -> Ignore.\n"
+            res += f"- Edge (3, 1, 6) has node 1 but time is 6 (not 1). -> Ignore.\n"
+            res += f"The nodes matched are 2 and 3.\n"
+            res += f"Answer: {answer}\n\n"
+        
+        return res
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
-        return f"What nodes are linked with node {query[0]} at time {query[1]}?\n"
+        return f"What nodes are linked with node {query[0]} exactly at time {query[1]}?\n"
     
     def evaluate(self, qa, response):
         ans = qa['answer']
