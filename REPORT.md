@@ -25,7 +25,7 @@ The authors designed **9 tasks** spanning temporal and spatial reasoning dimensi
 | 5 | `which_neighbor` | Spatial | Which nodes become neighbors only after time t? | List of node IDs |
 | 6 | `check_tclosure` | Verification | Do three nodes form a triangle? | Yes/No |
 | 7 | `check_tpath` | Verification | Is a given path time-respecting? | Yes/No |
-| 8 | `find_tpath` | Generation | Find a chronological path of length ≥ 3 | List of node IDs |
+| 8 | `find_tpath` | Generation | Find a chronological path of length | List of node IDs |
 | 9 | `sort_edge` | Ordering | Sort all edges by timestamp | List of tuples |
 
 ### 1.3 Figure 3 — The Core Evaluation
@@ -36,7 +36,7 @@ Figure 3 presents a **3×3 heatmap grid** for each of the 9 tasks, varying:
 - **100 instances** per (T, p) configuration
 - **Accuracy (%)** displayed in each cell
 
-The original Figure 3 used **GPT-3.5-Turbo** with 2-shot prompting, no chain-of-thought, and reported accuracy percentages showing how performance varies across task complexity and graph structure.
+The original Figure 3 used **GPT-3.5-Turbo** with 0-shot prompting  and reported accuracy percentages showing how performance varies across task complexity and graph structure.
 
 ---
 
@@ -62,7 +62,6 @@ The original Figure 3 used **GPT-3.5-Turbo** with 2-shot prompting, no chain-of-
 - Same graph generator (`DyGraphGenERCon` — Erdős-Rényi with continuous timestamps)
 - Same parameters: N=10, T∈{10,20,30}, p∈{0.3,0.5,0.7}
 - Same 100 instances per configuration (num_seed=100)
-- Same 2-shot prompting (k=2)
 - Same evaluation/parsing logic
 - No chain-of-thought (add_cot=0), no role instruction (add_role=0)
 
@@ -84,7 +83,7 @@ The 9 tasks × 9 configurations = **81 experiment groups** (8,100 total LLM quer
 ### 3.3 Per-Instance Pipeline
 For each of the 100 instances per (task, T, p):
 ```
-Generate ER graph → Create Q&A → Format 2-shot prompt → Query Vicuna-7B → Parse response → Score accuracy
+Generate ER graph → Create Q&A → Format/Improve prompt → Query Vicuna-7B → Parse response → Score accuracy
 ```
 
 ### 3.4 Sample Prompts and Model Responses
@@ -99,7 +98,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 > In an undirected dynamic graph, (u, v, t) means that node u and node v are linked with an undirected edge at time t.
 > Your task is to find ALL time steps at which two specified nodes share a direct edge in the dynamic graph.
 >
-> *Here are 2 examples:*
+> *Here is 1 example:*
 > Question: Given an undirected dynamic graph with the edges [(0, 2, 0), (0, 3, 1), (1, 2, 5), (3, 1, 6)]. When are node 0 and node 3 linked? ...
 > Answer:[1]
 >
@@ -305,7 +304,7 @@ The figure below shows the accuracy (%) heatmaps for all 9 tasks, reproducing th
 | T=20 | 50 | 50 | 50 |
 | T=30 | 50 | 50 | 50 |
 
-#### `find_tpath` — Find a chronological path of length ≥ 3
+#### `find_tpath` — Find a chronological path
 | | p=0.3 | p=0.5 | p=0.7 |
 |------|-------|-------|-------|
 | T=10 | 8 | 7 | **13** |
@@ -443,7 +442,7 @@ The original paper reports GPT-3.5-Turbo achieving meaningful accuracy across mo
 ## 6. Conclusions
 
 ### 6.1 Reproduction Validity
-We successfully reproduced the Figure 3 experimental setup of LLM4DyG using identical data generation, prompting, and evaluation pipelines. The only variable changed was the LLM: Vicuna-7B (7B, open-source) instead of GPT-3.5-Turbo (~175B, proprietary).
+We successfully reproduced the Figure 3 experimental setup of LLM4DyG using identical data generation, prompting (bit modified) , and evaluation pipelines. The only variable changed was the LLM: Vicuna-7B (7B, open-source) instead of GPT-3.5-Turbo (~175B, proprietary).
 
 ### 6.2 Key Findings
 
@@ -469,8 +468,8 @@ N (nodes):      10
 T (timesteps):  {10, 20, 30}
 p (edge prob):  {0.3, 0.5, 0.7}
 Instances:      100 per (task, T, p) configuration
-Total queries:  8,100
-Prompting:      2-shot, no CoT, no role instruction
+Total queries:  8100
+Prompting:      2-shot,1-shot, no CoT, no role instruction
 Temperature:    0 (deterministic)
 Max tokens:     2048
 ```
