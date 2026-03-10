@@ -109,7 +109,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (530 tokens):**
 > Answer: [3, 5]
 
-**Verdict:** ❌ Incorrect — the model included timestamp 5 (the edge (1, 5, 0) involves node 5 but not node 3). It confused a node ID with a timestamp.
+**Verdict:**  **Incorrect** — the model included timestamp 5 (the edge (1, 5, 0) involves node 5 but not node 3). It confused a node ID with a timestamp.
 
 ---
 
@@ -127,7 +127,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 >
 > Answer: 1
 
-**Verdict:** ❌ Incorrect — the model answered 1 instead of 0. Edge (1, 3, 0) directly connects them at time 0, but the model missed it.
+**Verdict:**  **Incorrect** — the model answered 1 instead of 0. Edge (1, 3, 0) directly connects them at time 0, but the model missed it.
 
 ---
 
@@ -143,7 +143,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (583 tokens):**
 > Answer: 10
 
-**Verdict:** ❌ Incorrect — answered 10 (which is outside range [0,9]). The triad closes at time 7 when edge (2, 6, 7) completes the triangle {2-5, 5-6, 2-6}.
+**Verdict:**  **Incorrect** — answered 10 (which is outside range [0,9]). The triad closes at time 7 when edge (2, 6, 7) completes the triangle {2-5, 5-6, 2-6}.
 
 ---
 
@@ -160,7 +160,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 > Given an undirected dynamic graph with the edges [(1, 2, 1), (1, 3, 1), (1, 2, 5), (3, 1, 6)]. What nodes are linked with node 1 at time 1?
 > Answer: [2, 3]
 
-**Verdict:** ❌ Incorrect — the model repeated the few-shot example instead of answering the actual question. This is a common hallucination pattern for small models.
+**Verdict:**  **Incorrect** — the model repeated the few-shot example instead of answering the actual question. This is a common hallucination pattern for small models.
 
 ---
 
@@ -176,7 +176,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (638 tokens):**
 > Answer: [3]
 
-**Verdict:** ❌ Incorrect — node 3 is linked with node 5 *at* time 3 (edge (3, 5, 3)), so it should be excluded. The correct answer is [6] (edge (5, 6, 9), time 9 > 3). The model failed at the negation logic.
+**Verdict:**  **Incorrect** — node 3 is linked with node 5 *at* time 3 (edge (3, 5, 3)), so it should be excluded. The correct answer is [6] (edge (5, 6, 9), time 9 > 3). The model failed at the negation logic.
 
 ---
 
@@ -192,7 +192,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (841 tokens):**
 > Answer: No.
 
-**Verdict:** ✅ Correct — but as noted in Section 5.1, the model answers "No" to virtually every instance, achieving 50% accuracy by coincidence on this balanced binary task.
+**Verdict:**  **Correct** — but as noted in Section 5.1, the model answers "No" to virtually every instance, achieving 50% accuracy by coincidence on this balanced binary task.
 
 ---
 
@@ -208,7 +208,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (575 tokens):**
 > Answer: No.
 
-**Verdict:** ✅ Correct — but again, the model defaults to "No" regardless of the input.
+**Verdict:**  **Correct** — but again, the model defaults to "No" regardless of the input.
 
 ---
 
@@ -225,7 +225,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 > We can start at node 0 and look for an edge connected to 0 at or after time 0. The edge (1, 5, 0) connects 0 to 1 at time 0. Let's move to node 1...
 > The edge (1, 8, 3) connects 1 to 8 at time 3. Let's move to node 8. Current path: [0, 1, 8]...
 
-**Verdict:** ❌ Incorrect — edge (1, 5, 0) does NOT connect to node 0; it connects nodes 1 and 5. The model misread the edge and hallucinated a connection. This is the most token-expensive task (1,282 avg tokens) with the highest parse failure rate.
+**Verdict:**  **Incorrect** — edge (1, 5, 0) does NOT connect to node 0; it connects nodes 1 and 5. The model misread the edge and hallucinated a connection. This is the most token-expensive task (1,282 avg tokens) with the highest parse failure rate.
 
 ---
 
@@ -241,7 +241,7 @@ Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 
 **Vicuna-7B Response (594 tokens):**
 > Answer: [(0, 4, 5), (1, 5, 0), (3, 5, 3), (4, 7, 7), (5, 6, 9), (6, 8, 3), (7, 9, 5), (1, 8, 3)]
 
-**Verdict:** ❌ Incorrect — the model sorted by the *first element of each tuple* (node ID) rather than by the *third element* (timestamp). Edge (0, 4, 5) comes first because node 0 is smallest, not because time 5 is earliest. This reveals a fundamental misunderstanding of the sorting criterion.
+**Verdict:**  **Incorrect** — the model sorted by the *first element of each tuple* (node ID) rather than by the *third element* (timestamp). Edge (0, 4, 5) comes first because node 0 is smallest, not because time 5 is earliest. This reveals a fundamental misunderstanding of the sorting criterion.
 
 ---
 
