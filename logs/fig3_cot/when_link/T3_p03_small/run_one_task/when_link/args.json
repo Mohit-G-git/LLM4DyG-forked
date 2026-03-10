@@ -1,0 +1,28 @@
+{
+    "t": "gen",
+    "task": "when_link",
+    "log_dir": "logs/fig3_cot/when_link/T3_p03_small",
+    "num_seed": 10,
+    "k": 2,
+    "T": [
+        3
+    ],
+    "N": [
+        5
+    ],
+    "p": [
+        0.3
+    ],
+    "model": "vicuna-7b",
+    "temperature": 0,
+    "max_tokens": 2048,
+    "add_cot": false,
+    "add_role": false,
+    "dyg_type": 1,
+    "edge_type": 0,
+    "imp": 0,
+    "short": 0,
+    "start_token": 900000,
+    "num_examplars": 2,
+    "task_folder": "logs/fig3_cot/when_link/T3_p03_small/run_one_task/when_link"
+}

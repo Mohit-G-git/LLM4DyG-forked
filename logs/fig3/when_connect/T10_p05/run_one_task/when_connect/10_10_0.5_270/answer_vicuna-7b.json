@@ -1,0 +1,1 @@
+{"prompt_tokens": 485, "total_tokens": 580, "completion_tokens": 95, "content": "Given the undirected dynamic graph with the edges:\n\n[(0, 1, 0), (1, 2, 1), (0, 2, 2), (0, 8, 6), (0, 5, 7), (0, 3, 8), (5, 9, 9)]\n\nWhen are node 0 and node 2 first connected?\nAnswer: 1"}

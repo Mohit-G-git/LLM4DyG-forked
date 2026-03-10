@@ -60,7 +60,23 @@ class DyGraphTaskFindTPath(DyGraphTask):
                 [0, 2, 3]
              ]
         ]
-        return self.make_qa_example(num, qa)
+        res = "Here are some examples:\n"
+        for i in range(1):
+            context = self.generate_context_prompt(qa[i][0])
+            question = self.generate_prompt_question(qa[i][1])
+            answer = qa[i][2]
+            res += f"Example {i+1}:\n"
+            res += f"{context}"
+            res += f"Question: {question}"
+            res += f"Reasoning: We need to find a sequence of at least 3 nodes starting with 0, where the connecting edges occur at increasing or equal times.\n"
+            res += f"- Start at node 0 at time 0.\n"
+            res += f"- Look for an edge connected to 0 at or after time 0.\n"
+            res += f"  - Edge (0, 2, 0) connects 0 to 2 at time 0. Let's move to node 2. Current path: [0, 2]. Current time: 0.\n"
+            res += f"- Look for an edge connected to 2 at or after time 0.\n"
+            res += f"  - Edge (2, 3, 1) connects 2 to 3 at time 1. Let's move to node 3. Current path: [0, 2, 3]. Current time: 1.\n"
+            res += f"The path [0, 2, 3] has length 3 and is chronological.\n"
+            res += f"Answer: {answer}\n\n"
+        return res
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
         return f"Find a chronological path starting at node {query[0]} with a length no less that 3. \n"

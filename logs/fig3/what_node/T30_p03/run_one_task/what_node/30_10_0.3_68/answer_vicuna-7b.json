@@ -1,0 +1,1 @@
+{"prompt_tokens": 557, "total_tokens": 691, "completion_tokens": 134, "content": "Given an undirected dynamic graph with the edges [(1, 8, 4), (0, 8, 7), (2, 3, 10), (2, 5, 12), (2, 7, 16), (0, 5, 18), (7, 9, 20), (6, 8, 23), (5, 6, 24), (2, 8, 28)], what nodes are linked with node 9 exactly at time 20?\n\nAnswer: [2, 8]"}

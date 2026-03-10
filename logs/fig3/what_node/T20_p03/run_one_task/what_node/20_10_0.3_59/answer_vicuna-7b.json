@@ -1,0 +1,1 @@
+{"prompt_tokens": 556, "total_tokens": 702, "completion_tokens": 146, "content": "Given an undirected dynamic graph with the edges [(3, 7, 0), (4, 7, 0), (3, 8, 3), (2, 5, 11), (0, 4, 12), (0, 8, 13), (6, 7, 13), (2, 9, 15), (0, 1, 17), (4, 9, 19)], what nodes are linked with node 1 exactly at time 17?\n\nAnswer: [17, 4, 2, 9, 0, 1]"}

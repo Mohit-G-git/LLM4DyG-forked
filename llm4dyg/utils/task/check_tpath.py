@@ -86,7 +86,23 @@ class DyGraphTaskCheckTPath(DyGraphTask):
                 'yes'
              ]
         ]
-        return self.make_qa_example(num, qa)
+        res = "Here are some examples:\n"
+        for i in range(1):
+            context = self.generate_context_prompt(qa[i][0])
+            question = self.generate_prompt_question(qa[i][1])
+            answer = qa[i][2]
+            res += f"Example {i+1}:\n"
+            res += f"{context}"
+            res += f"Question: {question}"
+            res += f"Reasoning: We need to traverse the path 0 -> 2 -> 3 and ensure the edge times never decrease.\n"
+            res += f"- Start at node 0 at time 0.\n"
+            res += f"- Find the earliest edge between node 0 and node 2 at or after time 0.\n"
+            res += f"  - Edge (0, 2, 0) is at time 0. Found! Current time becomes 0.\n"
+            res += f"- Next, find the earliest edge between node 2 and node 3 at or after time 0.\n"
+            res += f"  - Edge (2, 3, 1) is at time 1. Found! Current time becomes 1.\n"
+            res += f"We reached the end of the path successfully. The path is chronological.\n"
+            res += f"Answer: {answer}\n\n"
+        return res
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
         return f"Is the path {query} a chronological path?\n"

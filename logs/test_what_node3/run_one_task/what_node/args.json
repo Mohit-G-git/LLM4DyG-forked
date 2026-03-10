@@ -1,0 +1,28 @@
+{
+    "t": "gen",
+    "task": "what_node",
+    "log_dir": "logs/test_what_node3",
+    "num_seed": 5,
+    "k": 2,
+    "T": [
+        10
+    ],
+    "N": [
+        10
+    ],
+    "p": [
+        0.5
+    ],
+    "model": "vicuna-7b",
+    "temperature": 0,
+    "max_tokens": 2048,
+    "add_cot": false,
+    "add_role": false,
+    "dyg_type": 1,
+    "edge_type": 0,
+    "imp": 0,
+    "short": 0,
+    "start_token": 900000,
+    "num_examplars": 2,
+    "task_folder": "logs/test_what_node3/run_one_task/what_node"
+}

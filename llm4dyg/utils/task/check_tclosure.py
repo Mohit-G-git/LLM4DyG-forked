@@ -97,19 +97,41 @@ class DyGraphTaskCheckTClosure(DyGraphTask):
                 [(0, 2, 0), (1, 2, 1), (1, 5, 2), (3, 1, 3)],
                 [0, 2 ,1],
                 'no'
-            ],
-            [
-                [(0, 2, 0), (1, 2, 1), (1, 5, 2), (5, 2, 3)],
-                [5, 2 ,1],
-                'yes'
-            ],
-            [
-                [(0, 2, 0), (1, 2, 1), (1, 5, 2), (5, 2, 3)],
-                [0, 2 ,1],
-                'no'
             ]
         ]
-        return self.make_qa_example(num, qa)
+        res = "Here are some examples:\n"
+        
+        # Example 1
+        i = 0
+        context = self.generate_context_prompt(qa[i][0])
+        question = self.generate_prompt_question(qa[i][1])
+        answer = qa[i][2]
+        res += f"Example {i+1}:\n"
+        res += f"{context}"
+        res += f"Question: {question}"
+        res += f"Reasoning: We need to check if the three nodes 0, 2, and 1 form a closed triad. This means there must be an edge between (0, 2), an edge between (2, 1), and an edge between (1, 0) at any time.\n"
+        res += f"- Edge between 0 and 2? Yes, (0, 2, 0).\n"
+        res += f"- Edge between 2 and 1? Yes, (1, 2, 1).\n"
+        res += f"- Edge between 1 and 0? Yes, (1, 0, 2).\n"
+        res += f"All three pairs are connected. The answer is yes.\n"
+        res += f"Answer: {answer}\n\n"
+        
+        # Example 2
+        i = 1
+        context = self.generate_context_prompt(qa[i][0])
+        question = self.generate_prompt_question(qa[i][1])
+        answer = qa[i][2]
+        res += f"Example {i+1}:\n"
+        res += f"{context}"
+        res += f"Question: {question}"
+        res += f"Reasoning: We need to check if the three nodes 0, 2, and 1 form a closed triad. This means there must be an edge between (0, 2), an edge between (2, 1), and an edge between (1, 0) at any time.\n"
+        res += f"- Edge between 0 and 2? Yes, (0, 2, 0).\n"
+        res += f"- Edge between 2 and 1? Yes, (1, 2, 1).\n"
+        res += f"- Edge between 1 and 0? No edge between 1 and 0 exists in the graph.\n"
+        res += f"Not all three pairs are connected. The answer is no.\n"
+        res += f"Answer: {answer}\n\n"
+
+        return res
     
     def generate_prompt_question(self, query = None, *args, **kwargs):
         return f"Did the three nodes {query} form a closed triad?\n"

@@ -37,6 +37,9 @@ class DyGraphPrompt:
             imp = self.args.__dict__.get("imp", 0)
         else:
             imp = 0
+            
+        self.prompt_imp = get_imp(imp)
+        
         # Make CoT prompt dynamic based on task
         if args and args.task == 'when_link':
             self.prompt_cot = (
@@ -56,6 +59,24 @@ class DyGraphPrompt:
                 "- If NO, skip it.\n"
                 "After checking ALL edges, output your collected list of nodes.\n"
             )
+        elif args and args.task == 'which_neighbor':
+            self.prompt_cot = (
+                "Let's solve this step-by-step.\n"
+                "Go through EACH edge one at a time:\n"
+                "- First, check if the edge contains the queried node. If it doesn't, skip it entirely.\n"
+                "- If it does contain the queried node, check the time t.\n"
+                "- If t <= the queried time, the other node is EXCLUDED.\n"
+                "- If t > the queried time, the other node is a CANDIDATE.\n"
+                "Finally, return the CANDIDATES that were NEVER EXCLUDED.\n"
+            )
+        elif args and args.task == 'check_tclosure':
+            self.prompt_cot = "Let's solve this step-by-step.\nCheck if all three pairs formed by the three nodes have an edge between them at any time in the graph. If yes, return 'yes', else return 'no'.\n"
+        elif args and args.task == 'check_tpath':
+            self.prompt_cot = "Let's solve this step-by-step.\nTraverse the given path node by node, finding the earliest valid edge at each step that connects the current node to the next node without decreasing the time. If you can reach the end, return 'yes', else return 'no'.\n"
+        elif args and args.task == 'find_tpath':
+            self.prompt_cot = "Let's solve this step-by-step.\nStart at the given node and find a sequence of at least 3 nodes connected by edges whose times do not decrease.\n"
+        elif args and args.task == 'sort_edge':
+            self.prompt_cot = "Let's solve this step-by-step.\nList the time for each edge, then sort the edges from the earliest time to the latest time.\n"
         else:
             self.prompt_cot = "Let's work exactly step-by-step to avoid errors.\n"
             
@@ -108,8 +129,19 @@ class DyGraphPrompt:
             final_constraint += "Scan each edge (u, v, t) and collect time t whenever u and v match the two queried nodes (in either order).\n"
         elif self.args and self.args.task == 'what_node':
             final_constraint += "Scan each edge (u, v, t) and collect the other node whenever the time t matches the queried time AND one of the nodes matches the queried node.\n"
-        
-        final_constraint += "Output ONLY the final answer strictly in the required format.\n"
+        elif self.args and self.args.task == 'which_neighbor':
+            final_constraint += "Follow the step-by-step reasoning to strictly exclude nodes linked before the given time.\n"
+        elif self.args and self.args.task == 'check_tclosure':
+            final_constraint += "Ensure all three required edges exist in the graph before answering 'yes'.\n"
+        elif self.args and self.args.task == 'check_tpath':
+            final_constraint += "Ensure the edge times never decrease along the path before answering 'yes'.\n"
+        elif self.args and self.args.task == 'find_tpath':
+            final_constraint += "Ensure the path length is at least 3 (i.e., at least 3 nodes, 2 edges).\n"
+        if self.add_cot:
+            final_constraint += "Output your step-by-step reasoning first, and place strictly your final result on the last line prefixed with 'Answer: '.\n"
+        else:
+            final_constraint += "Output ONLY the final answer strictly in the required format.\n"
+            
         # prompt_seq = [
         #     instructor_dyg,
         #     instructor_task,

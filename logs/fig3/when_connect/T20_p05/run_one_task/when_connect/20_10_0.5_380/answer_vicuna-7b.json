@@ -1,0 +1,1 @@
+{"prompt_tokens": 422, "total_tokens": 483, "completion_tokens": 61, "content": "Given the undirected dynamic graph with the edges [(0, 1, 0), (1, 2, 1), (0, 2, 2)], the first connection between node 0 and node 2 occurs at time 1.\n\nAnswer: 1"}

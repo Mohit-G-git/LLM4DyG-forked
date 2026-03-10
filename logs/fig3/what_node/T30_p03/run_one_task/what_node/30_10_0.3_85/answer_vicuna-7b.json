@@ -1,0 +1,1 @@
+{"prompt_tokens": 565, "total_tokens": 711, "completion_tokens": 146, "content": "Given an undirected dynamic graph with the edges [(0, 3, 0), (1, 5, 4), (4, 9, 5), (0, 1, 10), (0, 5, 13), (3, 5, 13), (6, 7, 15), (2, 3, 19), (4, 6, 19), (3, 9, 20), (6, 8, 26)], what nodes are linked with node 1 exactly at time 4?\n\nAnswer: [3, 5, 13]"}

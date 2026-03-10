@@ -1,0 +1,195 @@
+# 🎯 QUICK COMMAND REFERENCE - Copy & Paste Ready
+
+## OPTION 1: SEQUENTIAL (Safest - Start Here!)
+
+```bash
+cd /mnt/raid/rl_gaming/LLM4DyG-forked
+source .venv/bin/activate
+bash run_remaining_5_tasks.sh
+```
+
+**Time:** 2-4 hours | **Acc:** 50-80% | **Reliability:** ✅✅✅
+
+---
+
+## OPTION 2: PARALLEL (Faster - After Sequential Works)
+
+### Terminal 1: Start Server on GPU 1 (Port 8001)
+```bash
+cd /mnt/raid/rl_gaming/LLM4DyG-forked
+source .venv/bin/activate
+python3 scripts/example/start_server.py --model vicuna-7b -t run --device 1 --port 8001
+```
+
+### Terminal 2: Start Server on GPU 2 (Port 8002)
+```bash
+cd /mnt/raid/rl_gaming/LLM4DyG-forked
+source .venv/bin/activate
+python3 scripts/example/start_server.py --model vicuna-7b -t run --device 2 --port 8002
+```
+
+### Terminal 3: Run Parallel Execution
+```bash
+cd /mnt/raid/rl_gaming/LLM4DyG-forked
+source .venv/bin/activate
+bash run_remaining_5_tasks_parallel.sh
+```
+
+**Time:** 1.5-2.5 hours | **Acc:** 50-80% | **Reliability:** ✅✅
+
+---
+
+## CHECK IF SERVER IS RUNNING
+
+```bash
+curl -s http://localhost:8000/v1/models | head -5
+```
+
+Should show: `{"object":"list","data":[{"id":"vicuna-7b"`
+
+---
+
+## MONITOR PROGRESS
+
+```bash
+# Count completed instances
+watch -n 5 'find logs/fig3_remaining -name "answer_*.json" | wc -l'
+```
+
+---
+
+## WATCH ACCURACY IN REAL-TIME
+
+```bash
+for task in which_neighbor check_tclosure check_tpath find_tpath sort_edge; do
+  if [ -f "logs/fig3_remaining/$task/results_vicuna-7b.json" ]; then
+    echo "$task:"
+    grep average_acc "logs/fig3_remaining/$task/results_vicuna-7b.json"
+  fi
+done
+```
+
+---
+
+## CHECK FINAL RESULTS
+
+```bash
+# Summary of all 5 remaining tasks
+for task in which_neighbor check_tclosure check_tpath find_tpath sort_edge; do
+  echo "=== $task ==="
+  python3 -c "
+import json
+with open('logs/fig3_remaining/$task/results_vicuna-7b.json', 'r') as f:
+    data = json.load(f)
+    acc = data.get('average_acc', 0) * 100
+    fail = data.get('fail_rate', 0) * 100
+    print(f'Accuracy: {acc:.1f}%')
+    print(f'Fail Rate: {fail:.1f}%')
+  "
+done
+```
+
+---
+
+## DEBUG A SPECIFIC TASK
+
+```bash
+# View one example response
+cat logs/fig3_remaining/which_neighbor/T10_p03/10_10_0.3_0/answer_vicuna-7b.json | python3 -m json.tool | head -20
+```
+
+---
+
+## COMPARE WITH EXISTING TASKS (logs/fig3)
+
+```bash
+# View results side-by-side
+echo "=== EXISTING TASKS (logs/fig3) ==="
+ls -d logs/fig3/*/results_*.json 2>/dev/null | head -10
+
+echo ""
+echo "=== NEW TASKS (logs/fig3_remaining) ==="
+ls -d logs/fig3_remaining/*/results_*.json 2>/dev/null | head -10
+```
+
+---
+
+## STOP EXECUTION
+
+```bash
+# If script is running and you want to stop it
+Ctrl+C
+
+# Kill all python processes
+pkill -f "run_one_task.py"
+```
+
+---
+
+## RESTART SERVERS
+
+```bash
+# Kill existing servers
+pkill -f "start_server.py"
+pkill -f "fastchat"
+pkill -f "model_worker"
+
+# Wait 5 seconds
+sleep 5
+
+# Start servers again (as shown in OPTION 2 above)
+```
+
+---
+
+## TROUBLESHOOT 0% ACCURACY
+
+If you see 0% accuracy:
+
+```bash
+# 1. Check if responses are truncated
+cat logs/fig3_remaining/{task}/T10_p03/*/answer_*.json | grep -o ".\\{1,50\}$"
+
+# 2. Check fail rate (should be < 30%)
+grep fail_rate logs/fig3_remaining/*/results_*.json
+
+# 3. Check GPU memory usage
+nvidia-smi
+
+# 4. If GPU memory > 90%, reduce instances in script
+# Edit run_remaining_5_tasks.sh:
+# NUM_SEED=100  →  NUM_SEED=50
+```
+
+---
+
+## QUICK STATS
+
+**Total work:**
+- Tasks: 5 (which_neighbor, check_tclosure, check_tpath, find_tpath, sort_edge)
+- Instances: 100 per task
+- Configs: 9 per task (T=[10,20,30], P=[0.3,0.5,0.7])
+- Total QA pairs: 5 × 100 × 9 = 4,500
+
+**Expected accuracy (typical):**
+- sort_edge: 80-95% (simple)
+- which_neighbor: 50-70% (medium)
+- check_tclosure: 50-70% (medium)
+- check_tpath: 45-65% (complex)
+- find_tpath: 40-60% (hardest)
+- **Average: 55-75%**
+
+**Timeline:**
+- Sequential: 2-4 hours
+- Parallel: 1.5-2.5 hours
+
+---
+
+## START NOW
+
+**Copy this one line:**
+```bash
+cd /mnt/raid/rl_gaming/LLM4DyG-forked && source .venv/bin/activate && bash run_remaining_5_tasks.sh
+```
+
+**Paste it in terminal and press Enter!** ✅

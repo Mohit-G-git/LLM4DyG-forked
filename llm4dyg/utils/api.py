@@ -4,7 +4,8 @@ def send_to_chat(
     model: str, messages: list, max_tokens: int = 2048, temperature: float = 0.5
 ) -> str:
     openai.api_key = "EMPTY"
-    openai.api_base = "http://localhost:8000/v1"
+    api_port = os.environ.get("LLM4DYG_API_PORT", "8000")
+    openai.api_base = f"http://localhost:{api_port}/v1"
 
     response = openai.ChatCompletion.create(
         model=model, messages=messages, temperature=temperature, max_tokens=max_tokens

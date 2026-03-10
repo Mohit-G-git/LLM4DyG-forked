@@ -1,0 +1,1 @@
+{"prompt_tokens": 395, "total_tokens": 537, "completion_tokens": 142, "content": "Given an undirected dynamic graph with the edges [(0, 2, 1), (6, 7, 1), (3, 7, 2), (0, 3, 3), (3, 8, 4), (5, 8, 4), (3, 9, 5), (0, 6, 8), (2, 4, 8), (0, 4, 9), (1, 6, 9)], what nodes are linked with node 6 at time 9?\n\nAnswer: [3, 8, 4, 5, 6]"}

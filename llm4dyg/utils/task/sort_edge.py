@@ -42,7 +42,25 @@ class DyGraphTaskSortEdge(DyGraphTask):
                 [(1, 2, 0), (1, 3, 1), (0, 1, 3)]
              ]
         ]
-        return self.make_qa_example(num, qa)
+        res = "Here are some examples:\n"
+        for i in range(1):
+            context = self.generate_context_prompt(qa[i][0])
+            question = self.generate_prompt_question(qa[i][1])
+            answer = qa[i][2]
+            res += f"Example {i+1}:\n"
+            res += f"{context}"
+            res += f"Question: {question}"
+            res += f"Reasoning: Let's list the time for each edge:\n"
+            res += f"- Edge (0, 1, 3) has time 3.\n"
+            res += f"- Edge (1, 3, 1) has time 1.\n"
+            res += f"- Edge (1, 2, 0) has time 0.\n"
+            res += f"Now sort them by time from smallest to largest: 0, 1, 3.\n"
+            res += f"- Earliest applies to (1, 2, 0)\n"
+            res += f"- Next applies to (1, 3, 1)\n"
+            res += f"- Latest applies to (0, 1, 3)\n"
+            res += f"Sorted edges: {answer}\n"
+            res += f"Answer: {answer}\n\n"
+        return res
         
     
     def generate_prompt_question(self, query = None, *args, **kwargs):

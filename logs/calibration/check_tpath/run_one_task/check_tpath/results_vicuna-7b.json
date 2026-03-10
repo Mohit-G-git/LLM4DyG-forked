@@ -1,0 +1,35 @@
+{
+    "fail_rate": 0.0,
+    "average_acc": 0.6,
+    "average_tokens": 2089.2,
+    "total_tokens": 10446,
+    "average_num_times": 6.6,
+    "average_num_edges": 12.2,
+    "average_num_nodes": 9.6,
+    "metrics": [
+        true,
+        true,
+        false,
+        false,
+        true
+    ],
+    "prompt_tokens": [
+        675,
+        765,
+        693,
+        702,
+        729
+    ],
+    "completion_tokens": [
+        2047,
+        422,
+        319,
+        2047,
+        2047
+    ],
+    "wrong_folders": [
+        "10_10_0.3_2",
+        "10_10_0.3_3"
+    ],
+    "fail_folders": []
+}
