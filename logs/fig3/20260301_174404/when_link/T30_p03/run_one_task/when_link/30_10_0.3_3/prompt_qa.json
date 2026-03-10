@@ -1,0 +1,6 @@
+{
+    "prompt": "Question: Given an undirected dynamic graph with the edges [(2, 7, 0), (0, 9, 3), (1, 8, 8), (0, 1, 10), (6, 7, 10), (5, 9, 19), (3, 5, 21), (0, 6, 24), (1, 2, 24), (0, 7, 25), (5, 8, 29)]. When are node 6 and node 7 linked?\nIn an undirected dynamic graph, (u, v, t) means that node u and node v are linked with an undirected edge at time t.\nYour task is to answer when two nodes are linked in the dynamic graph.\nGive the answer as a python list at the last of your response after 'Answer:'.\n\n Here is an example: \nQuestion: Given an undirected dynamic graph with the edges [(0, 2, 0), (0, 3, 1), (1, 2, 5), (3, 1, 6)]. When are node 0 and node 3 linked?\nAnswer:[1]\n\nIMPORTANT:\nThe dynamic graph and all required information are already fully provided above.\nDo NOT ask for more information.\nDo NOT explain your reasoning.\nOnly output the final answer strictly in the required format.\n",
+    "answer": [
+        10
+    ]
+}

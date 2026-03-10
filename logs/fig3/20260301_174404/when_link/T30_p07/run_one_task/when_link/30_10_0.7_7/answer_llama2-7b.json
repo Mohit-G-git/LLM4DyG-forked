@@ -1,0 +1,1 @@
+{"prompt_tokens": 604, "total_tokens": 648, "completion_tokens": 44, "content": " Given the dynamic graph provided, the times when node 0 and node 3 are linked are:\n\nAnswer: [7, 14, 19, 23, 25]"}

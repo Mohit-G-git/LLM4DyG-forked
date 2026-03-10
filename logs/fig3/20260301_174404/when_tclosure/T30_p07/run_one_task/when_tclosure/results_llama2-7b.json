@@ -1,0 +1,56 @@
+{
+    "fail_rate": 0.0,
+    "average_acc": 0.2,
+    "average_tokens": 628.0,
+    "total_tokens": 6280,
+    "average_num_times": 19.9,
+    "average_num_edges": 31.0,
+    "average_num_nodes": 10.0,
+    "metrics": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true
+    ],
+    "prompt_tokens": [
+        544,
+        595,
+        554,
+        577,
+        573,
+        556,
+        565,
+        663,
+        615,
+        611
+    ],
+    "completion_tokens": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        373
+    ],
+    "wrong_folders": [
+        "30_10_0.7_0",
+        "30_10_0.7_1",
+        "30_10_0.7_2",
+        "30_10_0.7_3",
+        "30_10_0.7_4",
+        "30_10_0.7_5",
+        "30_10_0.7_6",
+        "30_10_0.7_8"
+    ],
+    "fail_folders": []
+}

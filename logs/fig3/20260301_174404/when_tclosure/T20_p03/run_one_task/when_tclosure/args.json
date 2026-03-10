@@ -1,0 +1,28 @@
+{
+    "t": "gen",
+    "task": "when_tclosure",
+    "log_dir": "logs/fig3/20260301_174404/when_tclosure/T20_p03",
+    "num_seed": 10,
+    "k": 1,
+    "T": [
+        20
+    ],
+    "N": [
+        10
+    ],
+    "p": [
+        0.3
+    ],
+    "model": "llama2-7b",
+    "temperature": 0,
+    "max_tokens": 2048,
+    "add_cot": false,
+    "add_role": false,
+    "dyg_type": 1,
+    "edge_type": 0,
+    "imp": 0,
+    "short": 0,
+    "start_token": 900000,
+    "num_examplars": 1,
+    "task_folder": "logs/fig3/20260301_174404/when_tclosure/T20_p03/run_one_task/when_tclosure"
+}

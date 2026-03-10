@@ -1,0 +1,1 @@
+{"prompt_tokens": 357, "total_tokens": 512, "completion_tokens": 155, "content": " Given the undirected dynamic graph with the edges:\n\n[(0, 4, 1), (3, 5, 4), (0, 2, 5), (8, 9, 6), (1, 6, 7), (0, 5, 8), (1, 2, 8), (2, 5, 8), (1, 5, 9), (4, 6, 12), (1, 7, 13), (0, 1, 14), (1, 4, 18), (3, 9, 18)]\n\nAnswer: [2, 4]"}
