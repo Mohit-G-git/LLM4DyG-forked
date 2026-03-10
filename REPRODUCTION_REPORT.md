@@ -87,6 +87,163 @@ For each of the 100 instances per (task, T, p):
 Generate ER graph → Create Q&A → Format 2-shot prompt → Query Vicuna-7B → Parse response → Score accuracy
 ```
 
+### 3.4 Sample Prompts and Model Responses
+
+Below is one actual prompt–response pair per task (all from T=10, p=0.3, seed 0).
+
+---
+
+#### Task 1: `when_link`
+
+**Prompt:**
+> In an undirected dynamic graph, (u, v, t) means that node u and node v are linked with an undirected edge at time t.
+> Your task is to find ALL time steps at which two specified nodes share a direct edge in the dynamic graph.
+>
+> *Here are 2 examples:*
+> Question: Given an undirected dynamic graph with the edges [(0, 2, 0), (0, 3, 1), (1, 2, 5), (3, 1, 6)]. When are node 0 and node 3 linked? ...
+> Answer:[1]
+>
+> Question: Given an undirected dynamic graph with the edges [(1, 5, 0), (1, 8, 3), (3, 5, 3), (6, 8, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]. **When are node 3 and node 5 linked?**
+
+**Ground Truth:** `[3]`
+
+**Vicuna-7B Response (530 tokens):**
+> Answer: [3, 5]
+
+**Verdict:** ❌ Incorrect — the model included timestamp 5 (the edge (1, 5, 0) involves node 5 but not node 3). It confused a node ID with a timestamp.
+
+---
+
+#### Task 2: `when_connect`
+
+**Prompt:**
+> Your task is to answer when two nodes are first connected in the dynamic graph. Two nodes are connected if there exists a path between them.
+>
+> Question: Given edges [(1, 3, 0), (2, 8, 0), (5, 8, 0), (1, 6, 1), (3, 7, 1), (0, 8, 4), (7, 9, 4), (6, 9, 6), (3, 8, 8), (6, 8, 8), (0, 4, 9), (2, 3, 9), (3, 9, 9)]. **When are node 3 and node 1 first connected?**
+
+**Ground Truth:** `0`
+
+**Vicuna-7B Response (648 tokens):**
+> We scan each edge and collect the time t whenever u and v match the two queried nodes... we find that node 3 and node 1 are first connected at time 1.
+>
+> Answer: 1
+
+**Verdict:** ❌ Incorrect — the model answered 1 instead of 0. Edge (1, 3, 0) directly connects them at time 0, but the model missed it.
+
+---
+
+#### Task 3: `when_tclosure`
+
+**Prompt:**
+> Your task is to answer when the three nodes in the dynamic graph first close the triad. Two nodes with a common neighbor is said to have a triadic closure, if they are linked since some time so that the three nodes have linked with each other to form a triad.
+>
+> Question: Given edges [(1, 6, 0), (1, 9, 0), (2, 5, 1), (3, 7, 2), (4, 7, 2), (5, 6, 2), (4, 5, 4), (4, 9, 4), (6, 7, 4), (0, 1, 5), (1, 2, 5), (4, 6, 5), (3, 4, 6), (2, 6, 7), (7, 8, 7), (0, 4, 8), (0, 9, 9), (3, 6, 9)]. **When did the three nodes [6, 2, 5] first close the triad?**
+
+**Ground Truth:** `7`
+
+**Vicuna-7B Response (583 tokens):**
+> Answer: 10
+
+**Verdict:** ❌ Incorrect — answered 10 (which is outside range [0,9]). The triad closes at time 7 when edge (2, 6, 7) completes the triangle {2-5, 5-6, 2-6}.
+
+---
+
+#### Task 4: `what_node`
+
+**Prompt:**
+> Your task is to answer what nodes are linked with a given node at a given time in the dynamic graph.
+>
+> Question: Given edges [(1, 5, 0), (1, 8, 3), (3, 5, 3), (6, 8, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]. **What nodes are linked with node 0 at time 5?**
+
+**Ground Truth:** `[4]`
+
+**Vicuna-7B Response (437 tokens):**
+> Given an undirected dynamic graph with the edges [(1, 2, 1), (1, 3, 1), (1, 2, 5), (3, 1, 6)]. What nodes are linked with node 1 at time 1?
+> Answer: [2, 3]
+
+**Verdict:** ❌ Incorrect — the model repeated the few-shot example instead of answering the actual question. This is a common hallucination pattern for small models.
+
+---
+
+#### Task 5: `which_neighbor`
+
+**Prompt:**
+> Your task is to answer what nodes are linked with one node only after some time in the dynamic graph.
+>
+> Question: Given edges [(1, 5, 0), (1, 8, 3), (3, 5, 3), (6, 8, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]. **What nodes are linked with node 5 strictly after time 3 but not linked before or at time 3?**
+
+**Ground Truth:** `[6]`
+
+**Vicuna-7B Response (638 tokens):**
+> Answer: [3]
+
+**Verdict:** ❌ Incorrect — node 3 is linked with node 5 *at* time 3 (edge (3, 5, 3)), so it should be excluded. The correct answer is [6] (edge (5, 6, 9), time 9 > 3). The model failed at the negation logic.
+
+---
+
+#### Task 6: `check_tclosure`
+
+**Prompt:**
+> Your task is to answer whether three nodes in the dynamic graph formed a closed triad.
+>
+> Question: Given edges [(1, 6, 0), (1, 9, 0), (2, 5, 1), ..., (3, 6, 9)]. **Did the three nodes [3, 8, 1] form a closed triad?**
+
+**Ground Truth:** `no`
+
+**Vicuna-7B Response (841 tokens):**
+> Answer: No.
+
+**Verdict:** ✅ Correct — but as noted in Section 5.1, the model answers "No" to virtually every instance, achieving 50% accuracy by coincidence on this balanced binary task.
+
+---
+
+#### Task 7: `check_tpath`
+
+**Prompt:**
+> Your task is to answer whether a path is chronological in the dynamic graph. The time of the edges in a chronological path must not decrease.
+>
+> Question: Given edges [(1, 5, 0), (1, 8, 3), (3, 5, 3), (6, 8, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]. **Is the path [5, 0, 4] a chronological path?**
+
+**Ground Truth:** `no`
+
+**Vicuna-7B Response (575 tokens):**
+> Answer: No.
+
+**Verdict:** ✅ Correct — but again, the model defaults to "No" regardless of the input.
+
+---
+
+#### Task 8: `find_tpath`
+
+**Prompt:**
+> Your task is to find a chronological path starting at a given node with a length no less than 3 (at least 3 nodes, 2 edges) where edge times never decrease.
+>
+> Question: Given edges [(1, 5, 0), (1, 8, 3), (3, 5, 3), (6, 8, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]. **Find a chronological path starting at node 0 with length ≥ 3.**
+
+**Ground Truth:** any valid path (e.g., `[0, 4, 7, 9]`)
+
+**Vicuna-7B Response (1344 tokens):**
+> We can start at node 0 and look for an edge connected to 0 at or after time 0. The edge (1, 5, 0) connects 0 to 1 at time 0. Let's move to node 1...
+> The edge (1, 8, 3) connects 1 to 8 at time 3. Let's move to node 8. Current path: [0, 1, 8]...
+
+**Verdict:** ❌ Incorrect — edge (1, 5, 0) does NOT connect to node 0; it connects nodes 1 and 5. The model misread the edge and hallucinated a connection. This is the most token-expensive task (1,282 avg tokens) with the highest parse failure rate.
+
+---
+
+#### Task 9: `sort_edge`
+
+**Prompt:**
+> Your task is to sort the edges in the dynamic graph by time from earliest to latest.
+>
+> Question: Given edges [(6, 8, 3), (1, 8, 3), (5, 6, 9), (4, 7, 7), (7, 9, 5), (1, 5, 0), (0, 4, 5), (3, 5, 3)]. **Sort the edges by time from earliest to latest.**
+
+**Ground Truth:** `[(1, 5, 0), (6, 8, 3), (1, 8, 3), (3, 5, 3), (0, 4, 5), (7, 9, 5), (4, 7, 7), (5, 6, 9)]`
+
+**Vicuna-7B Response (594 tokens):**
+> Answer: [(0, 4, 5), (1, 5, 0), (3, 5, 3), (4, 7, 7), (5, 6, 9), (6, 8, 3), (7, 9, 5), (1, 8, 3)]
+
+**Verdict:** ❌ Incorrect — the model sorted by the *first element of each tuple* (node ID) rather than by the *third element* (timestamp). Edge (0, 4, 5) comes first because node 0 is smallest, not because time 5 is earliest. This reveals a fundamental misunderstanding of the sorting criterion.
+
 ---
 
 ## 4. Results Obtained
